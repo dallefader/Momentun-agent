@@ -1,0 +1,32 @@
+# API-nøgler — må ALDRIG committes
+fmp_key.txt
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# Database WAL-filer (midlertidige)
+*.db-shm
+*.db-wal
+
+# Logs
+worker.log
+worker_error.log
+x_agent.log
+
+# Daglige rapporter
+rapport_*.csv
+
+# LaunchAgent
+*.plist
+
+# macOS
+.DS_Store
+.fuse_hidden*
+
+# Gamle versioner
+scanner_v4.py
+scanner_v5.py
+scanner_v6.py

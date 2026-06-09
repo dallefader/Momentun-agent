@@ -1,0 +1,17 @@
+{
+  "cadence_seconds": {
+    "A": 600,
+    "B": 1800,
+    "C": 86400
+  },
+  "loop_sleep_seconds": 90,
+  "chunk_size": 50,
+  "chunk_delay_seconds": 1.5,
+  "chunk_jitter_seconds": 1.0,
+  "backfill_period": "1y",
+  "incremental_period": "5d",
+  "catchup_period": "1mo",
+  "stale_days_for_catchup": 5,
+  "max_fail_before_tier_c": 5,
+  "use_stooq_failover": false
+}
