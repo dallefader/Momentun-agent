@@ -1661,8 +1661,8 @@ def main():
         LOG.warning(f"Snapshot save failed: {e}")
 
     # TABS
-    tabs=st.tabs(["▸ FORSIDE","▸ SCANNER","▸ BENCHMARK","▸ POSITIONER","▸ WATCHLIST","▸ S1 PIPELINE","▸ CHARTS","▸ RS ANALYSE","▸ BACKTEST","▸ DIAGNOSTIK","▸ PLAYBOOK"])
-    tab1,tab2,tab3,tab4,tab5,tab_s1,tab6,tab7,tab_bt,tab_diag,tab8=tabs
+    tabs=st.tabs(["▸ FORSIDE","▸ SCANNER","▸ BENCHMARK","▸ POSITIONER","▸ WATCHLIST","▸ S1 PIPELINE","▸ CHARTS","▸ RS ANALYSE","▸ BACKTEST","▸ SIGNAL LOG","▸ DIAGNOSTIK","▸ PLAYBOOK"])
+    tab1,tab2,tab3,tab4,tab5,tab_s1,tab6,tab7,tab_bt,tab_siglog,tab_diag,tab8=tabs
 
     # ═══════════════════════════════════════════
     # TAB 1: FORSIDE – BLOOMBERG STYLE
@@ -2254,6 +2254,102 @@ def main():
             st.download_button("EKSPORT FORWARD RETURNS CSV",
                                fwd_df.to_csv(index=False).encode('utf-8'),
                                'forward_returns.csv','text/csv')
+
+    # ═══════════════════════════════════════════
+    # TAB SIGNAL LOG — backtest data til ML
+    # ═══════════════════════════════════════════
+    with tab_siglog:
+        st.markdown("### `SIGNAL LOG — Historiske BUY-signaler med features`")
+        st.caption("`Alle BUY-signaler logget med fulde tekniske features. Forward returns udfyldes automatisk efter 5/20/60/120 dage. Download CSV til ML-analyse.`")
+
+        log_df = sdb.get_signal_log()
+
+        if log_df.empty:
+            st.info("Ingen signaler logget endnu. Kør et fuldt scan for at starte logningen.")
+        else:
+            # ── Metrics ─────────────────────────────────────────────
+            total    = len(log_df)
+            with_20d = log_df['forward_20d'].notna().sum()
+            with_60d = log_df['forward_60d'].notna().sum()
+            avg_20d  = log_df['forward_20d'].mean()
+            hit_20d  = (log_df['forward_20d'] > 0).sum() / with_20d * 100 if with_20d > 0 else 0
+
+            m1, m2, m3, m4, m5 = st.columns(5)
+            m1.metric("LOGGEDE SIGNALER", total)
+            m2.metric("MED 20D RETURN", with_20d)
+            m3.metric("MED 60D RETURN", with_60d)
+            m4.metric("AVG 20D RETURN", f"{avg_20d:.1f}%" if with_20d else "—")
+            m5.metric("HIT-RATE 20D", f"{hit_20d:.0f}%" if with_20d else "—")
+
+            st.markdown("---")
+
+            # ── Filtre ───────────────────────────────────────────────
+            c1, c2, c3, c4 = st.columns(4)
+            with c1:
+                sig_filter = st.multiselect("Signal", sorted(log_df['signal'].dropna().unique()),
+                                            default=sorted(log_df['signal'].dropna().unique()))
+            with c2:
+                sec_filter = st.multiselect("Sektor", sorted(log_df['sector'].dropna().unique()),
+                                            default=sorted(log_df['sector'].dropna().unique()))
+            with c3:
+                reg_filter = st.multiselect("Regime", sorted(log_df['regime'].dropna().unique()),
+                                            default=sorted(log_df['regime'].dropna().unique()))
+            with c4:
+                only_returns = st.checkbox("Kun med 20d return", value=False)
+
+            filtered = log_df[
+                log_df['signal'].isin(sig_filter) &
+                log_df['sector'].isin(sec_filter) &
+                log_df['regime'].isin(reg_filter)
+            ]
+            if only_returns:
+                filtered = filtered[filtered['forward_20d'].notna()]
+
+            # ── Tabel ────────────────────────────────────────────────
+            display_cols = ['date','ticker','name','signal','score','price',
+                            'rsi','atr_pct','volr','rs_rank','squeeze',
+                            'dist_sma200','dist_sma20','sector','regime','stage',
+                            'forward_5d','forward_20d','forward_60d','forward_120d']
+            show = filtered[[c for c in display_cols if c in filtered.columns]].copy()
+
+            st.dataframe(
+                show.style.format({
+                    'score':'{:.0f}', 'price':'{:.2f}',
+                    'rsi':'{:.1f}', 'atr_pct':'{:.1f}%',
+                    'volr':'{:.2f}', 'rs_rank':'{:.0f}',
+                    'dist_sma200':'{:.1f}%', 'dist_sma20':'{:.1f}%',
+                    'forward_5d':'{:.1f}%', 'forward_20d':'{:.1f}%',
+                    'forward_60d':'{:.1f}%', 'forward_120d':'{:.1f}%',
+                }, na_rep='—'),
+                use_container_width=True, height=500
+            )
+
+            st.markdown("---")
+
+            # ── Performance summary ──────────────────────────────────
+            if with_20d >= 5:
+                st.markdown("#### Performance pr. signal (20d return)")
+                perf = filtered[filtered['forward_20d'].notna()].groupby('signal').agg(
+                    N=('forward_20d','count'),
+                    Avg=('forward_20d','mean'),
+                    Median=('forward_20d','median'),
+                    Best=('forward_20d','max'),
+                    Worst=('forward_20d','min'),
+                ).round(1)
+                perf['Hit%'] = (
+                    filtered[filtered['forward_20d'].notna()]
+                    .groupby('signal')['forward_20d']
+                    .apply(lambda x: (x > 0).mean() * 100).round(1)
+                )
+                st.dataframe(perf, use_container_width=True)
+
+            # ── CSV eksport ──────────────────────────────────────────
+            csv = filtered.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                "⬇ DOWNLOAD CSV TIL ML-ANALYSE",
+                csv, 'signal_log.csv', 'text/csv',
+                help="Indeholder alle features på signal-tidspunktet + forward returns. Klar til Excel eller Python/sklearn."
+            )
 
     # ═══════════════════════════════════════════
     # TAB DIAGNOSTIK – download success/failure

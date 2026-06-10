@@ -156,6 +156,13 @@ def run_full(universe):
 
         n = sdb.write_scan_results(scan, regime, source='worker-fmp-full')
         LOG.info(f"FULD SCAN færdig – {n} aktier gemt ({len(scanned_tickers)} med data, {len(stubs)} stubs) | regime={regime}")
+
+        # ── BACKTEST DATA LOG ─────────────────────────────────────────────
+        logged = sdb.log_signals(scan, regime=regime)
+        LOG.info(f"Signal log: {logged} nye BUY-signaler gemt til signal_log")
+        current_prices = dict(zip(scan['ticker'], scan['price'])) if not scan.empty else {}
+        updated = sdb.update_forward_returns(current_prices)
+        LOG.info(f"Forward returns opdateret: {updated} rækker")
     except Exception as e:
         LOG.error(f"run_full fejlede: {e}", exc_info=True)
 

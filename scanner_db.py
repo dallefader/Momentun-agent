@@ -116,7 +116,168 @@ def init_db(path=None):
         cur.execute(
             "CREATE TABLE IF NOT EXISTS diagnostics ("
             "id INTEGER PRIMARY KEY CHECK (id=1), ts TEXT, payload TEXT);")
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS signal_log (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                date        TEXT NOT NULL,
+                ticker      TEXT NOT NULL,
+                name        TEXT,
+                signal      TEXT,
+                setup       TEXT,
+                score       REAL,
+                ts_score    REAL,
+                ss_score    REAL,
+                rp_score    REAL,
+                price       REAL,
+                sma20       REAL,
+                sma60       REAL,
+                sma200      REAL,
+                dist_sma200 REAL,
+                dist_sma20  REAL,
+                rsi         REAL,
+                rsi_t       TEXT,
+                atr20       REAL,
+                atr_pct     REAL,
+                volr        REAL,
+                rvol50      REAL,
+                rs_rank     REAL,
+                rs_t        TEXT,
+                squeeze     INTEGER,
+                higher_low  INTEGER,
+                ifs         REAL,
+                dist_h20    REAL,
+                sector      TEXT,
+                region      TEXT,
+                regime      TEXT,
+                stage       TEXT,
+                stn         INTEGER,
+                stop        REAL,
+                dolvol_usd_m REAL,
+                forward_5d  REAL,
+                forward_20d REAL,
+                forward_60d REAL,
+                forward_120d REAL,
+                UNIQUE(date, ticker)
+            );""")
+        cur.execute("CREATE INDEX IF NOT EXISTS ix_siglog_date   ON signal_log(date);")
+        cur.execute("CREATE INDEX IF NOT EXISTS ix_siglog_ticker ON signal_log(ticker);")
+        cur.execute("CREATE INDEX IF NOT EXISTS ix_siglog_signal ON signal_log(signal);")
         conn.commit()
+    finally:
+        conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Signal log — backtest data collection
+# ---------------------------------------------------------------------------
+def log_signals(df, regime="NEUTRAL", path=None):
+    """Log alle BUY-signaler fra et scan med fulde features til signal_log.
+    Kør én gang per fuld scan. UNIQUE(date, ticker) forhindrer dubletter."""
+    if df is None or df.empty:
+        return 0
+    init_db(path)
+    buy_signals = {'BUY NOW', 'BUY BREAKOUT', 'BUILD POSITION', 'STARTER BUY'}
+    today = datetime.now().strftime('%Y-%m-%d')
+    conn = _connect(path)
+    inserted = 0
+    try:
+        cur = conn.cursor()
+        for _, r in df[df['buy'].isin(buy_signals)].iterrows():
+            p  = _clean_value(r.get('price'))
+            s2 = _clean_value(r.get('sma200'))
+            s20= _clean_value(r.get('sma20'))
+            dist_sma200 = round((s2 - p) / s2 * 100, 2) if s2 and p and s2 > 0 else None
+            dist_sma20  = round((p - s20) / s20 * 100, 2) if s20 and p and s20 > 0 else None
+            try:
+                cur.execute("""
+                    INSERT OR IGNORE INTO signal_log
+                    (date, ticker, name, signal, setup, score, ts_score, ss_score, rp_score,
+                     price, sma20, sma60, sma200, dist_sma200, dist_sma20,
+                     rsi, rsi_t, atr20, atr_pct, volr, rvol50,
+                     rs_rank, rs_t, squeeze, higher_low, ifs, dist_h20,
+                     sector, region, regime, stage, stn, stop, dolvol_usd_m)
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                """, (
+                    today,
+                    r.get('ticker'), r.get('name'),
+                    _clean_value(r.get('buy')), _clean_value(r.get('setup')),
+                    _clean_value(r.get('score')),
+                    _clean_value(r.get('ts')), _clean_value(r.get('ss')), _clean_value(r.get('rp')),
+                    p,
+                    s20, _clean_value(r.get('sma60')), s2,
+                    dist_sma200, dist_sma20,
+                    _clean_value(r.get('rsi')), _clean_value(r.get('rsi_t')),
+                    _clean_value(r.get('atr20')), _clean_value(r.get('atr_pct')),
+                    _clean_value(r.get('volr')), _clean_value(r.get('rvol50')),
+                    _clean_value(r.get('rs_rank')), _clean_value(r.get('rs_t')),
+                    int(bool(_clean_value(r.get('sqz')))),
+                    int(bool(_clean_value(r.get('hl')))),
+                    _clean_value(r.get('ifs')), _clean_value(r.get('dh20')),
+                    r.get('sector'), r.get('region'), regime,
+                    _clean_value(r.get('stage')), _clean_value(r.get('stn')),
+                    _clean_value(r.get('stop')), _clean_value(r.get('dolvol_usd_m')),
+                ))
+                inserted += cur.rowcount
+            except Exception:
+                pass
+        conn.commit()
+    finally:
+        conn.close()
+    return inserted
+
+
+def update_forward_returns(current_prices: dict, path=None):
+    """Opdater forward returns for historiske signaler baseret på aktuelle priser.
+    current_prices = {ticker: price}. Kør efter hvert scan."""
+    if not current_prices:
+        return 0
+    conn = _connect(path)
+    updated = 0
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, date, ticker, price
+            FROM signal_log
+            WHERE price > 0
+              AND (forward_5d IS NULL OR forward_20d IS NULL
+                   OR forward_60d IS NULL OR forward_120d IS NULL)
+        """)
+        rows = cur.fetchall()
+        today = datetime.now().date()
+        for row_id, date_str, ticker, entry_price in rows:
+            cp = current_prices.get(ticker)
+            if not cp or not entry_price:
+                continue
+            try:
+                signal_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            except Exception:
+                continue
+            days = (today - signal_date).days
+            ret = round((cp / entry_price - 1) * 100, 2)
+            updates = {}
+            if days >= 5:   updates['forward_5d']   = ret
+            if days >= 20:  updates['forward_20d']  = ret
+            if days >= 60:  updates['forward_60d']  = ret
+            if days >= 120: updates['forward_120d'] = ret
+            if updates:
+                set_clause = ', '.join(f"{k} = ?" for k in updates)
+                cur.execute(
+                    f"UPDATE signal_log SET {set_clause} WHERE id = ?",
+                    (*updates.values(), row_id)
+                )
+                updated += cur.rowcount
+        conn.commit()
+    finally:
+        conn.close()
+    return updated
+
+
+def get_signal_log(path=None) -> pd.DataFrame:
+    """Hent hele signal_log som DataFrame."""
+    conn = _connect(path)
+    try:
+        return pd.read_sql_query(
+            "SELECT * FROM signal_log ORDER BY date DESC, score DESC", conn)
     finally:
         conn.close()
 
