@@ -176,13 +176,16 @@ def log_signals(df, regime="NEUTRAL", path=None):
     if df is None or df.empty:
         return 0
     init_db(path)
-    buy_signals = {'BUY NOW', 'BUY BREAKOUT', 'BUILD POSITION', 'STARTER BUY'}
+    log_signals_set = {'BUY NOW', 'BUY BREAKOUT', 'BUILD POSITION', 'STARTER BUY',
+                       'EXTENDED — WAIT', 'EXIT'}
     today = datetime.now().strftime('%Y-%m-%d')
     conn = _connect(path)
     inserted = 0
     try:
         cur = conn.cursor()
-        for _, r in df[df['buy'].isin(buy_signals)].iterrows():
+        mask = df['buy'].isin(log_signals_set) | df['sell'].isin(log_signals_set)
+        for _, r in df[mask].iterrows():
+            signal = r.get('buy') if r.get('buy') in log_signals_set else r.get('sell')
             p  = _clean_value(r.get('price'))
             s2 = _clean_value(r.get('sma200'))
             s20= _clean_value(r.get('sma20'))
@@ -200,7 +203,7 @@ def log_signals(df, regime="NEUTRAL", path=None):
                 """, (
                     today,
                     r.get('ticker'), r.get('name'),
-                    _clean_value(r.get('buy')), _clean_value(r.get('setup')),
+                    signal, _clean_value(r.get('setup')),
                     _clean_value(r.get('score')),
                     _clean_value(r.get('ts')), _clean_value(r.get('ss')), _clean_value(r.get('rp')),
                     p,
