@@ -9,6 +9,7 @@ SCHEMA (dansk tid / CET):
   - BUY-kandidater:            Hver time
 """
 
+import os
 import time
 import logging
 import subprocess
