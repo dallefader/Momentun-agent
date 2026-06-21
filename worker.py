@@ -10,6 +10,7 @@ SCHEMA (dansk tid / CET):
 """
 
 import os
+import fcntl
 import time
 import logging
 import subprocess
@@ -17,6 +18,21 @@ import sys
 from datetime import datetime
 
 import scanner_db as sdb
+
+# ── Enkelt-instans lås ───────────────────────────────────────
+_LOCK_FILE = '/tmp/scanner_worker.lock'
+_lock_fh = None
+
+def _acquire_lock():
+    global _lock_fh
+    _lock_fh = open(_LOCK_FILE, 'w')
+    try:
+        fcntl.flock(_lock_fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        _lock_fh.write(str(os.getpid()))
+        _lock_fh.flush()
+    except IOError:
+        print(f"[worker] En anden instans kører allerede — afslutter (PID {os.getpid()})", flush=True)
+        sys.exit(0)
 
 # ── Logging ──────────────────────────────────────────────────
 logging.basicConfig(
@@ -122,6 +138,7 @@ def run_mention_scan():
 
 
 def main():
+    _acquire_lock()
     LOG.info("=" * 55)
     LOG.info("  WORKER STARTER")
     LOG.info("=" * 55)
