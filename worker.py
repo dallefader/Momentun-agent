@@ -87,8 +87,7 @@ def run_scan(mode='full'):
         )
         if result.returncode == 0:
             LOG.info(f"SCAN færdig ✅\n{result.stdout[-500:] if result.stdout else ''}")
-            if mode == 'full':
-                push_to_github()
+            push_to_github()
         else:
             LOG.error(f"SCAN fejlede ❌\n{result.stderr[-500:] if result.stderr else ''}")
     except subprocess.TimeoutExpired:
@@ -158,18 +157,25 @@ def main():
         hour   = now.hour
         minute = now.minute
 
-        # ── Fuld scan + mention scan: 08:00, 13:00, 21:00 ──
-        if hour in FULL_SCAN_HOURS and minute < 5 and last_full_hour != hour:
+        # ── Fuld scan + mention scan: 08:00, 13:00, 16:00, 19:00, 21:00 ──
+        if hour in FULL_SCAN_HOURS and last_full_hour != hour:
             last_full_hour = hour
             run_scan('full')
             run_mention_scan()
             if hour == 8:
-                run_research_agent()  # Morgenmail kun ved 08:00-scannet
+                run_research_agent()
 
-        # ── BUY scan: hver hele time ──
+        # ── BUY scan: hver hele time (kun i minute < 5 vinduet) ──
         elif minute < 5 and last_buy_hour != hour:
             last_buy_hour = hour
             run_scan('buy')
+            # Efter et langt BUY-scan: kør fuld scan hvis et vindue blev overskredet
+            now2 = datetime.now()
+            if now2.hour in FULL_SCAN_HOURS and last_full_hour != now2.hour:
+                last_full_hour = now2.hour
+                LOG.info(f"Indhenter misset fuld scan for time {now2.hour}")
+                run_scan('full')
+                run_mention_scan()
 
         time.sleep(60)
 

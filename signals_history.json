@@ -15503,5 +15503,329 @@
         "sector": "Industrials"
       }
     ]
+  },
+  {
+    "date": "2026-06-22",
+    "signals": [
+      {
+        "ticker": "AAPL",
+        "name": "Apple",
+        "signal": "STARTER BUY",
+        "entry_price": 298.01,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 74,
+        "region": "US",
+        "sector": "Tech"
+      },
+      {
+        "ticker": "HIVE",
+        "name": "HIVE Digital",
+        "signal": "BUILD POSITION",
+        "entry_price": 4.26,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 96,
+        "region": "US",
+        "sector": "Momentum"
+      },
+      {
+        "ticker": "IART",
+        "name": "Integra LifeSciences",
+        "signal": "BUY NOW",
+        "entry_price": 17.58,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 93,
+        "region": "US",
+        "sector": "Healthcare"
+      },
+      {
+        "ticker": "ESSITY-B.ST",
+        "name": "Essity",
+        "signal": "BUY NOW",
+        "entry_price": 267.5,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 36,
+        "region": "Sweden",
+        "sector": "Consumer"
+      },
+      {
+        "ticker": "BESI.AS",
+        "name": "BE Semiconductor",
+        "signal": "BUY NOW",
+        "entry_price": 309.8,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 93,
+        "region": "Netherlands",
+        "sector": "AI"
+      },
+      {
+        "ticker": "LLOY.L",
+        "name": "Lloyds Banking",
+        "signal": "BUY NOW",
+        "entry_price": 105.1,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 62,
+        "region": "UK",
+        "sector": "Financials"
+      },
+      {
+        "ticker": "PUM.DE",
+        "name": "Puma",
+        "signal": "BUILD POSITION",
+        "entry_price": 28.23,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 77,
+        "region": "Germany",
+        "sector": "Consumer"
+      },
+      {
+        "ticker": "BARC.L",
+        "name": "Barclays",
+        "signal": "BUY NOW",
+        "entry_price": 496.45,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 78,
+        "region": "UK",
+        "sector": "Financials"
+      },
+      {
+        "ticker": "ADS.DE",
+        "name": "Adidas",
+        "signal": "BUY NOW",
+        "entry_price": 174.9,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 51,
+        "region": "Germany",
+        "sector": "Consumer"
+      },
+      {
+        "ticker": "PLD",
+        "name": "Prologis",
+        "signal": "BUILD POSITION",
+        "entry_price": 140.54,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 56,
+        "region": "US",
+        "sector": "RealEstate"
+      },
+      {
+        "ticker": "DIOD",
+        "name": "Diodes Inc",
+        "signal": "BUY NOW",
+        "entry_price": 119.46,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 94,
+        "region": "US",
+        "sector": "Tech"
+      },
+      {
+        "ticker": "AVNS",
+        "name": "Avanos Medical",
+        "signal": "BUY NOW",
+        "entry_price": 24.94,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 93,
+        "region": "US",
+        "sector": "Healthcare"
+      },
+      {
+        "ticker": "IFX.DE",
+        "name": "Infineon",
+        "signal": "BUILD POSITION",
+        "entry_price": 81.97,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 96,
+        "region": "Germany",
+        "sector": "AI"
+      },
+      {
+        "ticker": "INGA.AS",
+        "name": "ING",
+        "signal": "BUY NOW",
+        "entry_price": 27.96,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 81,
+        "region": "Netherlands",
+        "sector": "Financials"
+      },
+      {
+        "ticker": "SSAB-A.ST",
+        "name": "SSAB",
+        "signal": "BUILD POSITION",
+        "entry_price": 94.48,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 86,
+        "region": "Sweden",
+        "sector": "Materials"
+      },
+      {
+        "ticker": "AIR.PA",
+        "name": "Airbus",
+        "signal": "BUY NOW",
+        "entry_price": 189.42,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 52,
+        "region": "France",
+        "sector": "Industrials"
+      },
+      {
+        "ticker": "HSBA.L",
+        "name": "HSBC",
+        "signal": "BUY NOW",
+        "entry_price": 1431.6,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 77,
+        "region": "UK",
+        "sector": "Financials"
+      },
+      {
+        "ticker": "MNSB",
+        "name": "MainStreet Bankshares",
+        "signal": "BUILD POSITION",
+        "entry_price": 23.86,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 59,
+        "region": "US",
+        "sector": "Financials"
+      },
+      {
+        "ticker": "ENEL.MI",
+        "name": "Enel",
+        "signal": "BUY NOW",
+        "entry_price": 9.94,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 54,
+        "region": "Italy",
+        "sector": "Utilities"
+      },
+      {
+        "ticker": "VIE.PA",
+        "name": "Veolia",
+        "signal": "BUY NOW",
+        "entry_price": 36.08,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 61,
+        "region": "France",
+        "sector": "Industrials"
+      },
+      {
+        "ticker": "2330.TW",
+        "name": "TSMC TW",
+        "signal": "BUY NOW",
+        "entry_price": 2410.0,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 89,
+        "region": "Taiwan",
+        "sector": "AI"
+      },
+      {
+        "ticker": "FBIZ",
+        "name": "First Business",
+        "signal": "BUY BREAKOUT",
+        "entry_price": 60.34,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 60,
+        "region": "US",
+        "sector": "Financials"
+      },
+      {
+        "ticker": "BOTZ",
+        "name": "Robotics AI",
+        "signal": "BUILD POSITION",
+        "entry_price": 38.37,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 52,
+        "region": "Global",
+        "sector": "ETF"
+      },
+      {
+        "ticker": "EGP",
+        "name": "EastGroup Properties",
+        "signal": "BUILD POSITION",
+        "entry_price": 199.97,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 45,
+        "region": "US",
+        "sector": "RealEstate"
+      },
+      {
+        "ticker": "BK",
+        "name": "BNY Mellon",
+        "signal": "BUY NOW",
+        "entry_price": 143.63,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 78,
+        "region": "US",
+        "sector": "Financials"
+      },
+      {
+        "ticker": "CM",
+        "name": "CIBC",
+        "signal": "BUILD POSITION",
+        "entry_price": 111.69,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 76,
+        "region": "Canada",
+        "sector": "Financials"
+      },
+      {
+        "ticker": "JYSK.CO",
+        "name": "Jyske Bank",
+        "signal": "BUY BREAKOUT",
+        "entry_price": 950.5,
+        "score": 98,
+        "stage_num": 2,
+        "rs_rank": 69,
+        "region": "Denmark",
+        "sector": "Financials"
+      },
+      {
+        "ticker": "RDVT",
+        "name": "Red Violet",
+        "signal": "BUILD POSITION",
+        "entry_price": 55.1,
+        "score": 96,
+        "stage_num": 2,
+        "rs_rank": 75,
+        "region": "US",
+        "sector": "Tech"
+      },
+      {
+        "ticker": "SLP",
+        "name": "Simulations Plus",
+        "signal": "BUY BREAKOUT",
+        "entry_price": 18.24,
+        "score": 92,
+        "stage_num": 2,
+        "rs_rank": 80,
+        "region": "US",
+        "sector": "Tech"
+      }
+    ]
   }
 ]
