@@ -20083,5 +20083,65 @@
         "sector": "Tech"
       }
     ]
+  },
+  {
+    "date": "2026-06-29",
+    "signals": [
+      {
+        "ticker": "BURL",
+        "name": "Burlington",
+        "signal": "BUILD POSITION",
+        "entry_price": 320.77,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 52,
+        "region": "US",
+        "sector": "Consumer"
+      },
+      {
+        "ticker": "PNC",
+        "name": "PNC Financial",
+        "signal": "BUY BREAKOUT",
+        "entry_price": 244.99,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 64,
+        "region": "US",
+        "sector": "Financials"
+      },
+      {
+        "ticker": "AVNS",
+        "name": "Avanos Medical",
+        "signal": "STARTER BUY",
+        "entry_price": 24.95,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 93,
+        "region": "US",
+        "sector": "Healthcare"
+      },
+      {
+        "ticker": "MILDEF.ST",
+        "name": "MilDef Group",
+        "signal": "BUILD POSITION",
+        "entry_price": 184.4,
+        "score": 92,
+        "stage_num": 2,
+        "rs_rank": 76,
+        "region": "Sweden",
+        "sector": "Industrials"
+      },
+      {
+        "ticker": "BYFC",
+        "name": "Broadway Financial",
+        "signal": "BUY BREAKOUT",
+        "entry_price": 10.38,
+        "score": 83,
+        "stage_num": 2,
+        "rs_rank": 82,
+        "region": "US",
+        "sector": "Financials"
+      }
+    ]
   }
 ]
