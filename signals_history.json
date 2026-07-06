@@ -21979,5 +21979,65 @@
         "sector": "Financials"
       }
     ]
+  },
+  {
+    "date": "2026-07-06",
+    "signals": [
+      {
+        "ticker": "GSK.L",
+        "name": "GSK",
+        "signal": "BUY NOW",
+        "entry_price": 1979.0,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 51,
+        "region": "UK",
+        "sector": "Healthcare"
+      },
+      {
+        "ticker": "CARL-B.CO",
+        "name": "Carlsberg",
+        "signal": "BUY NOW",
+        "entry_price": 935.6,
+        "score": 100,
+        "stage_num": 2,
+        "rs_rank": 48,
+        "region": "Denmark",
+        "sector": "Consumer"
+      },
+      {
+        "ticker": "MAERSK-B.CO",
+        "name": "AP Moeller Maersk",
+        "signal": "STARTER BUY",
+        "entry_price": 15790.0,
+        "score": 76,
+        "stage_num": 2,
+        "rs_rank": 53,
+        "region": "Denmark",
+        "sector": "Industrials"
+      },
+      {
+        "ticker": "KIT.OL",
+        "name": "Kitron",
+        "signal": "STARTER BUY",
+        "entry_price": 103.7,
+        "score": 70,
+        "stage_num": 2,
+        "rs_rank": 77,
+        "region": "Norway",
+        "sector": "Industrials"
+      },
+      {
+        "ticker": "NKT.CO",
+        "name": "NKT",
+        "signal": "STARTER BUY",
+        "entry_price": 957.0,
+        "score": 68,
+        "stage_num": 2,
+        "rs_rank": 84,
+        "region": "Denmark",
+        "sector": "Industrials"
+      }
+    ]
   }
 ]
